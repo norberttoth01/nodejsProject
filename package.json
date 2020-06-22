@@ -5,14 +5,16 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "start:prod": " NODE_ENV = production nodemon server.js"
+    "start:prod": " NODE_ENV = production nodemon server.js",
+    "debug": "ndb server.js"
   },
   "author": "Norbert Toth",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "mongoose": "^5.9.15"
+    "mongoose": "^5.9.15",
+    "slugify": "^1.4.0"
   },
   "devDependencies": {
     "eslint": "^7.0.0",
