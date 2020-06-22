@@ -1,5 +1,8 @@
 const express = require('express');
 const path = require('path');
+
+const AppError = require('./utils/AppError');
+const errorController = require('./controllers/errorController');
 const userRoutes = require('./routes/useresRoutes');
 const toursRoutes = require('./routes/toursRoutes');
 
@@ -12,21 +15,9 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/tours', toursRoutes);
 
 app.all('*', (req, res, next) => {
-  const error = new Error(`Can't find ${req.originalUrl} on this server`);
-  error.statusCode = 404;
-  error.status = 'failed';
-
-  next(error);
+  next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
 });
 
-app.use((err, req, res, next) => {
-  err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
-
-  res.status(err.statusCode).json({
-    status: err.status,
-    message: err.message,
-  });
-});
+app.use(errorController);
 
 module.exports = app;
