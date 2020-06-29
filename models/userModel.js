@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -31,6 +32,14 @@ const UserSchema = new mongoose.Schema({
       message: 'Passwords are not the same',
     },
   },
+  passwordChangedAt: Date,
+  role: {
+    type: String,
+    enum: ['user', 'admin', 'guide', 'lead-guide'],
+    default: 'user',
+  },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
 });
 
 UserSchema.pre('save', async function (next) {
@@ -43,12 +52,43 @@ UserSchema.pre('save', async function (next) {
   next();
 });
 
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+  this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+// password select is false that's why we cannot access passward by this.
 UserSchema.methods.correctPassword = async (
   candidatePassword,
   userPassword
 ) => {
   const comp = await bcrypt.compare(candidatePassword, userPassword);
   return comp;
+};
+
+UserSchema.methods.IsPasswordChangedAfter = function (JWTTimeStamp) {
+  if (this.passwordChangedAt) {
+    const changedTimeStamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    return changedTimeStamp > JWTTimeStamp;
+  }
+
+  return false;
+};
+
+UserSchema.methods.createResetPasswordToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  this.resetPasswordExpires = Date.now() + 10 * 60 * 1000;
+  return resetToken;
 };
 
 const User = mongoose.model('User', UserSchema);
