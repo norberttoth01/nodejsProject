@@ -32,14 +32,19 @@ const UserSchema = new mongoose.Schema({
       message: 'Passwords are not the same',
     },
   },
-  passwordChangedAt: Date,
   role: {
     type: String,
     enum: ['user', 'admin', 'guide', 'lead-guide'],
     default: 'user',
   },
+  passwordChangedAt: Date,
   resetPasswordToken: String,
   resetPasswordExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 UserSchema.pre('save', async function (next) {
@@ -55,6 +60,13 @@ UserSchema.pre('save', async function (next) {
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password') || this.isNew) return next();
   this.passwordChangedAt = Date.now() - 1000;
+  next();
+});
+
+UserSchema.pre(/^find/, function (next) {
+  // így megkapjuk azokat a usereket amelyeknek nincs active tulajdonságuk alapból
+  // {active: true} esetén nem jelennek meg azok a userek, akiket korábban hoztunk létre mint ahogy bevezettük volna az active tulajdonságot
+  this.find({ active: { $ne: false } });
   next();
 });
 

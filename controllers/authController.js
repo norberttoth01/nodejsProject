@@ -13,6 +13,20 @@ const signToken = (id) => {
 };
 const createSendToken = (user, res, statusCode) => {
   const token = signToken(user._id);
+
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    secure: process.env.NODE_ENV === 'production', // csak akkor kuldjuk el a cookie-t ha https kapcsolat van
+    httpOnly: true, // a browser csak fogadni és kuldeni tudja a cookiet, nem tudja módosítani vagy hozzaferni
+  };
+
+  res.cookie('jwt', token, cookieOptions);
+
+  user.password = undefined; //hiaba false a select option, create eseten visszakuldi
+  user.active = undefined;
+
   res.status(statusCode).json({
     status: 'success',
     token,
