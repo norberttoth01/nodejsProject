@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
+const User = require('./userModel');
+
 const tourSchema = new mongoose.Schema(
   {
     name: {
@@ -81,6 +83,37 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      //GeoJSON, itt definialjuk a startLocation tipusat, ami egy object, ez tartalmaz egy type property-t aminek a tipusa string
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinate: [Number],
+      address: String,
+      description: String,
+    },
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinate: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    // guides: Array, in case of embedding
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
 
   {
@@ -99,8 +132,23 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
+// tourSchema.pre('save', async function (next) {
+//   const guidePromises = this.guides.map(async (id) => await User.findById(id));
+
+//   this.guides = await Promise.all(guidePromises);
+//   next();
+// });
+
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
+  next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
   next();
 });
 const Tour = mongoose.model('Tour', tourSchema);

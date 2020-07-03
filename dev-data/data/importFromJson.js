@@ -20,7 +20,7 @@ mongoose
   });
 
 const tours = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '../data/tours-simple.json'), 'utf-8')
+  fs.readFileSync(path.join(__dirname, '../data/tours.json'), 'utf-8')
 );
 
 // delete all data from db

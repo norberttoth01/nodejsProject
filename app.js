@@ -10,13 +10,14 @@ const AppError = require('./utils/AppError');
 const errorController = require('./controllers/errorController');
 const userRoutes = require('./routes/useresRoutes');
 const toursRoutes = require('./routes/toursRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 const app = express();
 
 const limiter = rateLimit({
   max: 100,
   windonMs: 60 * 60 * 1000,
-  message: 'Too mny request from this IP. Please, try again in an hour',
+  message: 'Too many request from this IP. Please, try again in an hour',
 });
 // SET SECURITY HTTP HEADERS
 app.use(helmet());
@@ -47,6 +48,7 @@ app.use(
 
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/tours', toursRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
