@@ -46,7 +46,7 @@ const UserSchema = new mongoose.Schema({
     select: false,
   },
 });
-
+// csak create es save eseten mukodik
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
 
@@ -98,7 +98,7 @@ UserSchema.methods.createResetPasswordToken = function () {
     .createHash('sha256')
     .update(resetToken)
     .digest('hex');
-
+  // itt modosijuk a usert ezért kesobb, a fv hivas utan mentenunk kell
   this.resetPasswordExpires = Date.now() + 10 * 60 * 1000;
   return resetToken;
 };

@@ -1,6 +1,7 @@
 const AppError = require('../utils/AppError');
 const User = require('../models/userModel');
 const catchAsync = require('../utils/catchAsync');
+const factory = require('./handlerFactory');
 
 const filterObj = (obj, ...allowedFields) => {
   const filteredObj = {};
@@ -10,34 +11,10 @@ const filterObj = (obj, ...allowedFields) => {
   return filteredObj;
 };
 
-exports.getAllUser = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'succes',
-    data: {
-      users,
-    },
-  });
-});
-
 exports.createUser = (req, res) => {
-  res.status(201).json({ status: 'succes', data: ' user created' });
-};
-
-exports.getUser = (req, res) => {
-  res.status(200).json({
-    status: 'succes',
-    data: 'just one user',
-    id: req.params.id,
-  });
-};
-
-exports.deleteUser = (req, res) => {
-  res.status(200).json({
-    status: 'succes',
-    data: 'deleted user',
-    id: req.params.id,
+  res.status(500).json({
+    status: 'error',
+    message: 'this route is not defined. Please use /signup route',
   });
 };
 
@@ -55,7 +32,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true, // a módosított dokumentummal tér vissza, nem az eredetivel
-    runValidators: true, // csak a módosítotakat validálja
+    runValidators: true, // csak a módosítottakat validálja
   });
   res.status(200).json({
     status: 'success',
@@ -74,10 +51,12 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateUser = (req, res) => {
-  res.status(200).json({
-    status: 'succes',
-    data: 'update user',
-    id: req.params.id,
-  });
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
 };
+
+exports.getAllUser = factory.getAll(User);
+exports.getUser = factory.getOne(User);
+exports.deleteUser = factory.deleteOne(User);
+exports.updateUser = factory.updateOne(User);

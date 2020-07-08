@@ -121,14 +121,18 @@ const tourSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 tourSchema.virtual('durationweeks').get(function () {
   return this.duration / 7;
 });
 
 tourSchema.virtual('reviews', {
   ref: 'Review',
-  foreignField: 'tour', // megkeresi a review kollekcióban azokat a dokumentumokat,
-  localField: '_id', // amelyik tour-ja megegyezik az adott tour _id-jével
+  foreignField: 'tour', // megkeresi a review kollekcióban (foreign)azokat a dokumentumokat,
+  localField: '_id', // amelyik tour-ja megegyezik az adott tour(local) _id-jével
 });
 
 tourSchema.pre('save', function (next) {
