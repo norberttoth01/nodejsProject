@@ -14,6 +14,11 @@ const reviewRoutes = require('./routes/reviewRoutes');
 
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 const limiter = rateLimit({
   max: 100,
   windonMs: 60 * 60 * 1000,
@@ -25,7 +30,6 @@ app.use(helmet());
 // LIMIT REQUEST FROM THE SAME IP
 app.use('/api', limiter);
 
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json({ limit: '10kb' }));
 
 //Data sanitization againts NoSQL query injection

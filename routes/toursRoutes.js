@@ -34,6 +34,11 @@ router
     toursController.deleteTour
   );
 
+router
+  .route('/tour-within/:distance/center/:latlng/unit/:unit')
+  .get(toursController.getToursWithin);
+
+router.route('/distances/:latlng/unit:unit').get(toursController.getDistance);
 // router
 //   .route('/:tourId/reviews')
 //   .post(
