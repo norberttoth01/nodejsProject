@@ -11,6 +11,7 @@ const errorController = require('./controllers/errorController');
 const userRoutes = require('./routes/useresRoutes');
 const toursRoutes = require('./routes/toursRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
+const viewRoutes = require('./routes/viewRoutes');
 
 const app = express();
 
@@ -49,7 +50,8 @@ app.use(
     ],
   })
 );
-
+//Routes
+app.use('/', viewRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/tours', toursRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
