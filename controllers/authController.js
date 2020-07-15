@@ -64,6 +64,16 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, res, 200);
 });
 
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 2 * 1000),
+  });
+
+  res.status(200).json({
+    status: 'success',
+  });
+};
+
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
   const { authorization } = req.headers;
@@ -97,24 +107,29 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 //just for rendered pages, no error if user is not logged in
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
   if (req.cookies.jwt) {
-    const decoded = await promisify(jwt.verify)(
-      req.cookies.jwt,
-      process.env.JWT_Secret
-    );
-    const currentUser = await User.findById(decoded.id).select('+password');
-    if (!currentUser) {
+    try {
+      // kijelentkezesnel a jwt = loggedout ezret hibát fog dobni a verify, de nem akarjuk, hogy a errorhandler kezelje, ezert nincs catchasync
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_Secret
+      );
+      const currentUser = await User.findById(decoded.id).select('+password');
+      if (!currentUser) {
+        return next();
+      }
+      if (currentUser.IsPasswordChangedAfter(decoded.iat)) {
+        return next();
+      }
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
       return next();
     }
-    if (currentUser.IsPasswordChangedAfter(decoded.iat)) {
-      return next();
-    }
-    res.locals.user = currentUser;
-    return next();
   }
   next();
-});
+};
 
 exports.restrictedTo = (...roles) => {
   return (req, res, next) => {
