@@ -8368,6 +8368,28 @@ var hideAlert = function hideAlert() {
 };
 
 exports.hideAlert = hideAlert;
+},{}],"spinner.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.hideSpinner = exports.showSpinner = void 0;
+
+/* eslint-disable */
+var showSpinner = function showSpinner() {
+  var markup = "<div class=\"modal\"><div class=\"lds-roller\"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>";
+  document.querySelector('body').insertAdjacentHTML('afterbegin', markup);
+};
+
+exports.showSpinner = showSpinner;
+
+var hideSpinner = function hideSpinner() {
+  var spinner = document.querySelector('.modal');
+  spinner.remove();
+};
+
+exports.hideSpinner = hideSpinner;
 },{}],"login.js":[function(require,module,exports) {
 "use strict";
 
@@ -8379,6 +8401,8 @@ exports.logout = exports.login = void 0;
 var _axios = _interopRequireDefault(require("axios"));
 
 var _alerts = require("./alerts");
+
+var _spinner = require("./spinner");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8393,8 +8417,10 @@ var login = /*#__PURE__*/function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.prev = 0;
-            _context.next = 3;
+            (0, _alerts.hideAlert)();
+            (0, _spinner.showSpinner)();
+            _context.prev = 2;
+            _context.next = 5;
             return (0, _axios.default)({
               method: 'POST',
               url: 'http://localhost:8000/api/v1/users/login',
@@ -8404,7 +8430,7 @@ var login = /*#__PURE__*/function () {
               }
             });
 
-          case 3:
+          case 5:
             result = _context.sent;
 
             if (result.data.status === 'success') {
@@ -8414,20 +8440,21 @@ var login = /*#__PURE__*/function () {
               (0, _alerts.showAlert)('success', 'Logged in succesfully');
             }
 
-            _context.next = 10;
+            _context.next = 13;
             break;
 
-          case 7:
-            _context.prev = 7;
-            _context.t0 = _context["catch"](0);
+          case 9:
+            _context.prev = 9;
+            _context.t0 = _context["catch"](2);
+            (0, _spinner.hideSpinner)();
             (0, _alerts.showAlert)('error', _context.t0.response.data.message);
 
-          case 10:
+          case 13:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 7]]);
+    }, _callee, null, [[2, 9]]);
   }));
 
   return function login(_x, _x2) {
@@ -8478,7 +8505,7 @@ var logout = /*#__PURE__*/function () {
 }();
 
 exports.logout = logout;
-},{"axios":"../../node_modules/axios/index.js","./alerts":"alerts.js"}],"mapBox.js":[function(require,module,exports) {
+},{"axios":"../../node_modules/axios/index.js","./alerts":"alerts.js","./spinner":"spinner.js"}],"mapBox.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8537,6 +8564,8 @@ var _axios = _interopRequireDefault(require("axios"));
 
 var _alerts = require("./alerts");
 
+var _spinner = require("./spinner");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -8550,9 +8579,10 @@ var updateData = /*#__PURE__*/function () {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            console.log(name, email);
-            _context.prev = 1;
-            _context.next = 4;
+            (0, _alerts.hideAlert)();
+            (0, _spinner.showSpinner)();
+            _context.prev = 2;
+            _context.next = 5;
             return (0, _axios.default)({
               method: 'PATCH',
               url: 'http://localhost:8000/api/v1/users/updateMe',
@@ -8562,29 +8592,30 @@ var updateData = /*#__PURE__*/function () {
               }
             });
 
-          case 4:
+          case 5:
             result = _context.sent;
 
             if (result.data.status === 'success') {
+              (0, _spinner.hideSpinner)();
               updateUserName(result.data.data.user.name.split(' ')[0]);
               (0, _alerts.showAlert)('success', 'Updated successfully');
             }
 
-            _context.next = 12;
+            _context.next = 13;
             break;
 
-          case 8:
-            _context.prev = 8;
-            _context.t0 = _context["catch"](1);
-            console.log(_context.t0);
+          case 9:
+            _context.prev = 9;
+            _context.t0 = _context["catch"](2);
+            (0, _spinner.hideSpinner)();
             (0, _alerts.showAlert)('error', _context.t0.response.data.message);
 
-          case 12:
+          case 13:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[1, 8]]);
+    }, _callee, null, [[2, 9]]);
   }));
 
   return function updateData(_x, _x2) {
@@ -8598,7 +8629,7 @@ var updateUserName = function updateUserName(name) {
   var nameField = document.querySelector('#name');
   nameField.textContent = name;
 };
-},{"axios":"../../node_modules/axios/index.js","./alerts":"alerts.js"}],"index.js":[function(require,module,exports) {
+},{"axios":"../../node_modules/axios/index.js","./alerts":"alerts.js","./spinner":"spinner.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 require("core-js/modules/es6.array.copy-within");
@@ -8870,7 +8901,12 @@ var userForm = document.querySelector('.form-user-data');
 
 if (formElement) {
   formElement.addEventListener('submit', function (e) {
-    e.preventDefault();
+    e.preventDefault(); //ha a modal letezik akkor a bejelentkezes folyamatban, nem engedjuk a kerest ujra elkuldeni
+
+    if (document.querySelector('.modal')) {
+      return;
+    }
+
     var email = document.querySelector('#email').value;
     var password = document.querySelector('#password').value;
     (0, _login.login)(email, password);
@@ -8889,6 +8925,11 @@ if (logoutElement) {
 if (userForm) {
   userForm.addEventListener('submit', function (e) {
     e.preventDefault();
+
+    if (document.querySelector('.modal')) {
+      return;
+    }
+
     var name = userForm.querySelector('#name').value;
     var email = userForm.querySelector('#email').value;
     (0, _updateSettings.updateData)(name, email);

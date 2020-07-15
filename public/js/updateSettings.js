@@ -1,9 +1,11 @@
 /* eslint-disable*/
 import axios from 'axios';
-import { showAlert } from './alerts';
+import { showAlert, hideAlert } from './alerts';
+import { showSpinner, hideSpinner } from './spinner';
 
 export const updateData = async (name, email) => {
-  console.log(name, email);
+  hideAlert();
+  showSpinner();
   try {
     const result = await axios({
       method: 'PATCH',
@@ -14,11 +16,12 @@ export const updateData = async (name, email) => {
       },
     });
     if (result.data.status === 'success') {
+      hideSpinner();
       updateUserName(result.data.data.user.name.split(' ')[0]);
       showAlert('success', 'Updated successfully');
     }
   } catch (err) {
-    console.log(err);
+    hideSpinner();
     showAlert('error', err.response.data.message);
   }
 };

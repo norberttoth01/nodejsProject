@@ -1,7 +1,11 @@
 /* eslint-disable */
 import axios from 'axios';
-import { showAlert } from './alerts';
+import { showAlert, hideAlert } from './alerts';
+import { showSpinner, hideSpinner } from './spinner';
+
 export const login = async (email, password) => {
+  hideAlert();
+  showSpinner();
   try {
     const result = await axios({
       method: 'POST',
@@ -19,6 +23,7 @@ export const login = async (email, password) => {
       showAlert('success', 'Logged in succesfully');
     }
   } catch (err) {
+    hideSpinner();
     showAlert('error', err.response.data.message);
   }
 };

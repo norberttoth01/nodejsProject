@@ -13,7 +13,10 @@ const userForm = document.querySelector('.form-user-data');
 if (formElement) {
   formElement.addEventListener('submit', (e) => {
     e.preventDefault();
-
+    //ha a modal letezik akkor a bejelentkezes folyamatban, nem engedjuk a kerest ujra elkuldeni
+    if (document.querySelector('.modal')) {
+      return;
+    }
     const email = document.querySelector('#email').value;
     const password = document.querySelector('#password').value;
     login(email, password);
@@ -32,6 +35,9 @@ if (logoutElement) {
 if (userForm) {
   userForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (document.querySelector('.modal')) {
+      return;
+    }
     const name = userForm.querySelector('#name').value;
     const email = userForm.querySelector('#email').value;
     updateData(name, email);
