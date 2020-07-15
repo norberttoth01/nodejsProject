@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "start:prod": "set NODE_ENV=production&& ndb server.js",
+    "start:prod": "set NODE_ENV=production&& nodemon server.js",
     "debug": "ndb server.js",
     "watch:js": "parcel watch ./public/js/index.js  --public-url /js --out-dir ./public/js --out-file bundle.js"
   },
