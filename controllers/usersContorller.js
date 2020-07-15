@@ -22,9 +22,9 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm) {
     next(
       new AppError(
-        'This route is not for password updates. Please, use /udateMyPassword route'
-      ),
-      400
+        'This route is not for password updates. Please, use /udateMyPassword route',
+        400
+      )
     );
   }
   // nem adhatjuk át módisításra a teljes body-t, mivel így a user módosíthatna security adatokat pl a role-t.

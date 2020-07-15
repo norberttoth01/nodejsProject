@@ -104,6 +104,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     next(new AppError('User recently changed password. Please log in again'));
   }
   req.user = currentUser;
+  res.locals.user = currentUser;
   next();
 });
 //just for rendered pages, no error if user is not logged in
