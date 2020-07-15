@@ -53,12 +53,12 @@ exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return next(new AppError('Please provide your email and password'), 400);
+    return next(new AppError('Please provide your email and password', 400));
   }
   const user = await User.findOne({ email }).select('+password');
 
   if (!user || !(await user.correctPassword(password, user.password))) {
-    return next(new AppError('Incorrect email or password'), 401);
+    return next(new AppError('Incorrect email or password', 401));
   }
 
   createSendToken(user, res, 200);
@@ -70,6 +70,8 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   if (authorization && authorization.startsWith('Bearer')) {
     token = authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token) {
@@ -94,6 +96,25 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+//just for rendered pages, no error if user is not logged in
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    const decoded = await promisify(jwt.verify)(
+      req.cookies.jwt,
+      process.env.JWT_Secret
+    );
+    const currentUser = await User.findById(decoded.id).select('+password');
+    if (!currentUser) {
+      return next();
+    }
+    if (currentUser.IsPasswordChangedAfter(decoded.iat)) {
+      return next();
+    }
+    res.locals.user = currentUser;
+    return next();
+  }
+  next();
+});
 
 exports.restrictedTo = (...roles) => {
   return (req, res, next) => {
@@ -110,7 +131,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
-    return next(new AppError('There is no user with that eamil address'), 404);
+    return next(new AppError('There is no user with that eamil address', 404));
   }
 
   const resetToken = user.createResetPasswordToken();
