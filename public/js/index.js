@@ -3,12 +3,14 @@ import '@babel/polyfill';
 import { login } from './login';
 import { logout } from './login';
 import { displayMap } from './mapBox';
-import { updateData } from './updateSettings';
+import { updateSettings } from './updateSettings';
 
+// DOM EELMENETS
 const formElement = document.querySelector('.form--login');
 const mapElement = document.querySelector('#map');
 const logoutElement = document.querySelector('.nav__el--logout');
 const userForm = document.querySelector('.form-user-data');
+const passwordForm = document.querySelector('.form-user-settings');
 
 if (formElement) {
   formElement.addEventListener('submit', (e) => {
@@ -40,6 +42,28 @@ if (userForm) {
     }
     const name = userForm.querySelector('#name').value;
     const email = userForm.querySelector('#email').value;
-    updateData(name, email);
+    updateSettings({ name, email }, 'data');
+  });
+}
+
+if (passwordForm) {
+  passwordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (document.querySelector('.modal')) {
+      return;
+    }
+    const currentPassword = passwordForm.querySelector('#password-current')
+      .value;
+    const newPassword = passwordForm.querySelector('#password').value;
+    const newPasswordConfirm = passwordForm.querySelector('#password-confirm')
+      .value;
+
+    await updateSettings(
+      { currentPassword, newPassword, newPasswordConfirm },
+      'password'
+    );
+    passwordForm.querySelector('#password-current').value = '';
+    passwordForm.querySelector('#password').value = '';
+    passwordForm.querySelector('#password-confirm').value = '';
   });
 }
