@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const multer = require('multer');
 const sharp = require('sharp');
 const AppError = require('../utils/AppError');
@@ -14,7 +16,14 @@ const factory = require('./handlerFactory');
 //     cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
 //   },
 // });
-
+const deleteOldUserPhoto = async (photo) => {
+  await fs.unlink(
+    path.join(__dirname, `../public/img/users/${photo}`),
+    (err) => {
+      if (err) console.log("error. couldn't delete old photo");
+    }
+  );
+};
 const multerStorage = multer.memoryStorage();
 
 // test if the uploaded file is an image
@@ -82,6 +91,11 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     new: true, // a módosított dokumentummal tér vissza, nem az eredetivel
     runValidators: true, // csak a módosítottakat validálja
   });
+
+  if (req.file && !req.user.photo.startsWith('default')) {
+    await deleteOldUserPhoto(req.user.photo);
+  }
+
   res.status(200).json({
     status: 'success',
     data: {
