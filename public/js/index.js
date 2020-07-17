@@ -40,9 +40,24 @@ if (userForm) {
     if (document.querySelector('.modal')) {
       return;
     }
-    const name = userForm.querySelector('#name').value;
-    const email = userForm.querySelector('#email').value;
-    updateSettings({ name, email }, 'data');
+    const form = new FormData();
+    form.append('name', userForm.querySelector('#name').value);
+    form.append('email', userForm.querySelector('#email').value);
+    form.append('photo', document.querySelector('#photo').files[0]);
+
+    updateSettings(form, 'data');
+  });
+
+  userForm.querySelector('.form__upload').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      document.querySelector('.nav__user-img').src = e.target.result;
+      document.querySelector('.form__user-photo').src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
   });
 }
 

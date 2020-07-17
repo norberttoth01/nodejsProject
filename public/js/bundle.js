@@ -8934,12 +8934,22 @@ if (userForm) {
       return;
     }
 
-    var name = userForm.querySelector('#name').value;
-    var email = userForm.querySelector('#email').value;
-    (0, _updateSettings.updateSettings)({
-      name: name,
-      email: email
-    }, 'data');
+    var form = new FormData();
+    form.append('name', userForm.querySelector('#name').value);
+    form.append('email', userForm.querySelector('#email').value);
+    form.append('photo', document.querySelector('#photo').files[0]);
+    (0, _updateSettings.updateSettings)(form, 'data');
+  });
+  userForm.querySelector('.form__upload').addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      document.querySelector('.nav__user-img').src = e.target.result;
+      document.querySelector('.form__user-photo').src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
   });
 }
 
@@ -9017,7 +9027,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49980" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52371" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
