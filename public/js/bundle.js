@@ -8411,7 +8411,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 var login = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(email, password) {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(data, isCreate) {
     var result;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
@@ -8423,11 +8423,8 @@ var login = /*#__PURE__*/function () {
             _context.next = 5;
             return (0, _axios.default)({
               method: 'POST',
-              url: 'http://localhost:8000/api/v1/users/login',
-              data: {
-                email: email,
-                password: password
-              }
+              url: "http://localhost:8000/api/v1/users/".concat(isCreate ? 'signup' : 'login'),
+              data: data
             });
 
           case 5:
@@ -8436,8 +8433,8 @@ var login = /*#__PURE__*/function () {
             if (result.data.status === 'success') {
               setTimeout(function () {
                 location.assign('/');
-              }, 1000);
-              (0, _alerts.showAlert)('success', 'Logged in succesfully');
+              }, 250);
+              (0, _alerts.showAlert)('success', isCreate ? 'Your account created successfully ' : 'Logged in succesfully');
             }
 
             _context.next = 13;
@@ -8911,9 +8908,17 @@ if (formElement) {
       return;
     }
 
-    var email = document.querySelector('#email').value;
-    var password = document.querySelector('#password').value;
-    (0, _login.login)(email, password);
+    var data = {};
+    var isCreateUser = window.location.pathname === '/signup';
+
+    if (isCreateUser) {
+      data.name = document.querySelector('#name').value;
+      data.passwordConfirm = document.querySelector('#passwordConfirm').value;
+    }
+
+    data.email = document.querySelector('#email').value;
+    data.password = document.querySelector('#password').value;
+    (0, _login.login)(data, isCreateUser);
   });
 }
 
@@ -9027,7 +9032,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52371" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49848" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -3,24 +3,28 @@ import axios from 'axios';
 import { showAlert, hideAlert } from './alerts';
 import { showSpinner, hideSpinner } from './spinner';
 
-export const login = async (email, password) => {
+export const login = async (data, isCreate) => {
   hideAlert();
   showSpinner();
   try {
     const result = await axios({
       method: 'POST',
-      url: 'http://localhost:8000/api/v1/users/login',
-      data: {
-        email,
-        password,
-      },
+      url: `http://localhost:8000/api/v1/users/${
+        isCreate ? 'signup' : 'login'
+      }`,
+      data,
     });
 
     if (result.data.status === 'success') {
       setTimeout(() => {
         location.assign('/');
-      }, 1000);
-      showAlert('success', 'Logged in succesfully');
+      }, 250);
+      showAlert(
+        'success',
+        isCreate
+          ? 'Your account created successfully '
+          : 'Logged in succesfully'
+      );
     }
   } catch (err) {
     hideSpinner();

@@ -26,7 +26,12 @@ exports.getTour = catchAsync(async (req, res, next) => {
 });
 
 exports.login = (req, res) => {
-  res.status(200).render('login', { title: 'Log into your account' });
+  const url = req.url.replace('/', '');
+
+  res.status(200).render('login', {
+    title: url === 'login' ? 'Log into your account' : 'Create Your account',
+    url,
+  });
 };
 
 exports.getAccount = (req, res) => {

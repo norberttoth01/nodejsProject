@@ -19,9 +19,17 @@ if (formElement) {
     if (document.querySelector('.modal')) {
       return;
     }
-    const email = document.querySelector('#email').value;
-    const password = document.querySelector('#password').value;
-    login(email, password);
+    const data = {};
+
+    const isCreateUser = window.location.pathname === '/signup';
+
+    if (isCreateUser) {
+      data.name = document.querySelector('#name').value;
+      data.passwordConfirm = document.querySelector('#passwordConfirm').value;
+    }
+    data.email = document.querySelector('#email').value;
+    data.password = document.querySelector('#password').value;
+    login(data, isCreateUser);
   });
 }
 
