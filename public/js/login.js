@@ -3,15 +3,13 @@ import axios from 'axios';
 import { showAlert, hideAlert } from './alerts';
 import { showSpinner, hideSpinner } from './spinner';
 
-export const login = async (data, isCreate) => {
+export const login = async (data, url, message) => {
   hideAlert();
   showSpinner();
   try {
     const result = await axios({
       method: 'POST',
-      url: `http://localhost:8000/api/v1/users/${
-        isCreate ? 'signup' : 'login'
-      }`,
+      url: `http://localhost:8000/api/v1/users/${url}`,
       data,
     });
 
@@ -19,14 +17,10 @@ export const login = async (data, isCreate) => {
       setTimeout(() => {
         location.assign('/');
       }, 250);
-      showAlert(
-        'success',
-        isCreate
-          ? 'Your account created successfully '
-          : 'Logged in succesfully'
-      );
+      showAlert('success', message);
     }
   } catch (err) {
+    console.log(err.response.data.message);
     hideSpinner();
     showAlert('error', err.response.data.message);
   }
@@ -41,7 +35,6 @@ export const logout = async () => {
 
     if ((result.data.status = 'success')) location.reload(true); // force to reload from the server not from cache
   } catch (err) {
-    console.log(err);
     showAlert('error', 'Error logging out! Please try again');
   }
 };

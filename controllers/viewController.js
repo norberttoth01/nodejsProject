@@ -27,10 +27,27 @@ exports.getTour = catchAsync(async (req, res, next) => {
 
 exports.login = (req, res) => {
   const url = req.url.replace('/', '');
-
+  let btn;
+  let title;
+  switch (url) {
+    case 'login':
+      title = 'Log into your account';
+      btn = 'login';
+      break;
+    case 'signup':
+      title = 'Create Your account';
+      btn = ' sign up';
+      break;
+    case 'forgotpassword':
+      title = 'Forgotten password';
+      btn = 'new password';
+      break;
+    default:
+  }
   res.status(200).render('login', {
-    title: url === 'login' ? 'Log into your account' : 'Create Your account',
+    title,
     url,
+    btn,
   });
 };
 
@@ -38,4 +55,8 @@ exports.getAccount = (req, res) => {
   res.status(200).render('account', {
     title: 'Your account',
   });
+};
+
+exports.forgotPassword = (req, res, next) => {
+  res.status(200).render('forgotPassword', { title: 'new password' });
 };

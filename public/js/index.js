@@ -19,17 +19,27 @@ if (formElement) {
     if (document.querySelector('.modal')) {
       return;
     }
-    const data = {};
 
-    const isCreateUser = window.location.pathname === '/signup';
+    let data;
+    let message;
+    let url = window.location.pathname.replace('/', '');
 
-    if (isCreateUser) {
-      data.name = document.querySelector('#name').value;
-      data.passwordConfirm = document.querySelector('#passwordConfirm').value;
+    switch (url) {
+      case 'login':
+        data = createFormData('email', 'password');
+        message = 'Logged in succesfully';
+        break;
+      case 'signup':
+        message = 'Your account created successfully ';
+        data = createFormData('email', 'password', 'passwordConfirm', 'name');
+        break;
+      case 'forgotpassword':
+        message = 'We sent a request url to your email address';
+        data = createFormData('email');
     }
-    data.email = document.querySelector('#email').value;
-    data.password = document.querySelector('#password').value;
-    login(data, isCreateUser);
+
+    console.log(data, message);
+    login(data, url, message);
   });
 }
 
@@ -90,3 +100,11 @@ if (passwordForm) {
     passwordForm.querySelector('#password-confirm').value = '';
   });
 }
+
+const createFormData = (...ids) => {
+  const data = {};
+  ids.forEach((id) => {
+    data[id] = document.querySelector(`#${id}`).value;
+  });
+  return data;
+};
