@@ -158,9 +158,13 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   // we have to save the user what was modified by createResetPassword method
   await user.save({ validateBeforeSave: false });
 
+  // const resetUrl = `${req.protocol}://${req.get(
+  //   'host'
+  // )}/api/v1/users/resetPassword/${resetToken}`;
+
   const resetUrl = `${req.protocol}://${req.get(
     'host'
-  )}/api/v1/users/${resetToken}`;
+  )}/resetPassword/${resetToken}`;
 
   try {
     await new Email(user, resetUrl).sendPasswordReset();
@@ -180,6 +184,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
 });
 
 exports.resetPassword = catchAsync(async (req, res, next) => {
+  console.log('run resetpassw ctrl');
   const hashedToken = crypto
     .createHash('sha256')
     .update(req.params.token)

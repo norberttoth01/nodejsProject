@@ -26,9 +26,11 @@ exports.getTour = catchAsync(async (req, res, next) => {
 });
 
 exports.login = (req, res) => {
+  console.log(req.url);
   const url = req.url.replace('/', '');
   let btn;
   let title;
+  // eslint-disable-next-line default-case
   switch (url) {
     case 'login':
       title = 'Log into your account';
@@ -42,8 +44,11 @@ exports.login = (req, res) => {
       title = 'Forgotten password';
       btn = 'new password';
       break;
-    default:
+    case url.match(/^resetPassword/) ? url : undefined:
+      title = 'Reset your password';
+      btn = 'reset password';
   }
+  console.log(title, btn);
   res.status(200).render('login', {
     title,
     url,

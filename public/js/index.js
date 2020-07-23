@@ -36,9 +36,12 @@ if (formElement) {
       case 'forgotpassword':
         message = 'We sent a request url to your email address';
         data = createFormData('email');
+        break;
+      case url.match(/^resetPassword/) ? url : undefined:
+        message = 'Changed your password succesfully';
+        data = createFormData('password', 'passwordConfirm');
     }
 
-    console.log(data, message);
     login(data, url, message);
   });
 }

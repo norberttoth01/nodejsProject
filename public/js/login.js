@@ -8,11 +8,11 @@ export const login = async (data, url, message) => {
   showSpinner();
   try {
     const result = await axios({
-      method: 'POST',
+      method: url.startsWith('resetPassword') ? 'PATCH' : 'POST',
       url: `http://localhost:8000/api/v1/users/${url}`,
       data,
     });
-
+    console.log(url, url.startsWith('resetPassword'));
     if (result.data.status === 'success') {
       setTimeout(() => {
         location.assign('/');
@@ -20,7 +20,7 @@ export const login = async (data, url, message) => {
       showAlert('success', message);
     }
   } catch (err) {
-    console.log(err.response.data.message);
+    console.log(err);
     hideSpinner();
     showAlert('error', err.response.data.message);
   }

@@ -8422,13 +8422,14 @@ var login = /*#__PURE__*/function () {
             _context.prev = 2;
             _context.next = 5;
             return (0, _axios.default)({
-              method: 'POST',
+              method: url.startsWith('resetPassword') ? 'PATCH' : 'POST',
               url: "http://localhost:8000/api/v1/users/".concat(url),
               data: data
             });
 
           case 5:
             result = _context.sent;
+            console.log(url, url.startsWith('resetPassword'));
 
             if (result.data.status === 'success') {
               setTimeout(function () {
@@ -8437,22 +8438,22 @@ var login = /*#__PURE__*/function () {
               (0, _alerts.showAlert)('success', message);
             }
 
-            _context.next = 14;
+            _context.next = 15;
             break;
 
-          case 9:
-            _context.prev = 9;
+          case 10:
+            _context.prev = 10;
             _context.t0 = _context["catch"](2);
-            console.log(_context.t0.response.data.message);
+            console.log(_context.t0);
             (0, _spinner.hideSpinner)();
             (0, _alerts.showAlert)('error', _context.t0.response.data.message);
 
-          case 14:
+          case 15:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[2, 9]]);
+    }, _callee, null, [[2, 10]]);
   }));
 
   return function login(_x, _x2, _x3) {
@@ -8926,9 +8927,13 @@ if (formElement) {
       case 'forgotpassword':
         message = 'We sent a request url to your email address';
         data = createFormData('email');
+        break;
+
+      case url.match(/^resetPassword/) ? url : undefined:
+        message = 'Changed your password succesfully';
+        data = createFormData('password', 'passwordConfirm');
     }
 
-    console.log(data, message);
     (0, _login.login)(data, url, message);
   });
 }
@@ -9056,7 +9061,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49772" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51794" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

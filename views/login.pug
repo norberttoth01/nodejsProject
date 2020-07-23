@@ -9,14 +9,16 @@ block content
           .form__group
             label.form__label(for='name') Your name
             input#name.form__input(type='text', required)
-        .form__group
-          label.form__label(for='email') Email address
-          input#email.form__input(type='email', placeholder='you@example.com', required)
+        
+        - if(!url.startsWith('resetPassword'))    
+          .form__group
+            label.form__label(for='email') Email address
+            input#email.form__input(type='email', placeholder='you@example.com', required)
         - if(url !== 'forgotpassword')
           .form__group.ma-bt-md
             label.form__label(for='password') Password
             input#password.form__input(type='password', placeholder='••••••••', required, minlength='8')
-        - if(url === 'signup')
+        - if(url === 'signup' || url.startsWith('resetPassword'))
           .form__group
             label.form__label(for='passwordConfirm') Confirm password
             input#passwordConfirm.form__input(type='password', placeholder='••••••••', required, minlength='8')
