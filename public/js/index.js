@@ -4,6 +4,7 @@ import { login } from './login';
 import { logout } from './login';
 import { displayMap } from './mapBox';
 import { updateSettings } from './updateSettings';
+import { bookTour } from './stripe';
 
 // DOM EELMENETS
 const formElement = document.querySelector('.form--login');
@@ -11,6 +12,7 @@ const mapElement = document.querySelector('#map');
 const logoutElement = document.querySelector('.nav__el--logout');
 const userForm = document.querySelector('.form-user-data');
 const passwordForm = document.querySelector('.form-user-settings');
+const bookBtn = document.querySelector('#book-tour');
 
 if (formElement) {
   formElement.addEventListener('submit', (e) => {
@@ -104,6 +106,15 @@ if (passwordForm) {
   });
 }
 
+if (bookBtn) {
+  bookBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.target.textContent = 'processing...';
+    const tourId = bookBtn.dataset.tourid;
+
+    bookTour(tourId);
+  });
+}
 const createFormData = (...ids) => {
   const data = {};
   ids.forEach((id) => {

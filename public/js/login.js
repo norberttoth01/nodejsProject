@@ -12,7 +12,7 @@ export const login = async (data, url, message) => {
       url: `http://localhost:8000/api/v1/users/${url}`,
       data,
     });
-    console.log(url, url.startsWith('resetPassword'));
+
     if (result.data.status === 'success') {
       setTimeout(() => {
         location.assign('/');
@@ -27,6 +27,7 @@ export const login = async (data, url, message) => {
 };
 
 export const logout = async () => {
+  console.log('run logout');
   try {
     const result = await axios({
       method: 'GET',

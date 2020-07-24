@@ -1,6 +1,7 @@
 const Tour = require('../models/tourModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
+const Booking = require('../models/bookingModel');
 
 exports.getOverview = catchAsync(async (req, res, next) => {
   const tours = await Tour.find();
@@ -26,7 +27,6 @@ exports.getTour = catchAsync(async (req, res, next) => {
 });
 
 exports.login = (req, res) => {
-  console.log(req.url);
   const url = req.url.replace('/', '');
   let btn;
   let title;
@@ -48,13 +48,21 @@ exports.login = (req, res) => {
       title = 'Reset your password';
       btn = 'reset password';
   }
-  console.log(title, btn);
   res.status(200).render('login', {
     title,
     url,
     btn,
   });
 };
+
+exports.getMyTours = catchAsync(async (req, res) => {
+  // alternative for virtual populate
+  const bookings = await Booking.find({ user: req.user.id });
+  const tourIds = bookings.map((el) => el.tour); // not neccesery to use el.tour.id
+  const tours = await Tour.find({ _id: { $in: tourIds } });
+
+  res.status(200).render('overview', { title: 'My booked tours', tours });
+});
 
 exports.getAccount = (req, res) => {
   res.status(200).render('account', {
