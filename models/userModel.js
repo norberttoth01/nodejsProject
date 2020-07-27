@@ -74,7 +74,7 @@ UserSchema.pre(/^find/, function (next) {
   next();
 });
 
-// password select is false that's why we cannot access passward by this.
+// password select is false that's why we cannot access password by this.
 UserSchema.methods.correctPassword = async (
   candidatePassword,
   userPassword
