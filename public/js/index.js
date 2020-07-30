@@ -1,7 +1,6 @@
 /* eslint-disable*/
 import '@babel/polyfill';
-import { login } from './login';
-import { logout } from './login';
+import { login, logout  } from './login';
 import { displayMap } from './mapBox';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
