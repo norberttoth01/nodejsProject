@@ -3,4 +3,3 @@
 Built using modern technologies: Node.js, express, mongoDb, mongoose ...
 Also used: stripe, mapbox, sendgrid, multer, sharp
 
-You can check the deployed app at https://toursofnature.herokuapp.com, unfortunately not responsive yet (:
